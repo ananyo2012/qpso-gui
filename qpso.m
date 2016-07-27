@@ -1,4 +1,4 @@
-function [mean_data, gbest_find, gbestval, worst, std_deviation, Mean, eltime] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles)
+function [data, fit_count, gbest_find, gbestval, worst, std_deviation, Mean, eltime] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles)
 %[gbest_find,gbestval_find,fitcount,std_deviation,Mean]= qpso('failure_mutual1',3,500,10000,40,30,0,1,varargin)
 
 tic;
@@ -13,7 +13,7 @@ fhd=filename;
 
 % VRmin=0;VRmax=5;
 
-NumberOfElites=2;
+%elite=2;
 %varargin=[];
 
 %rand('twister',sum(100*clock));
@@ -27,7 +27,7 @@ mvcrit=2;
 cnt3=0;
 cnt2=0;
 ergrd=1e-9;
- ergrdep=100;
+ergrdep=100;
 
 if length(VRmin)==1
     VRmin=repmat(VRmin,1,D);
@@ -41,28 +41,28 @@ VRmax=repmat(VRmax,ps,1);
 data=zeros(runno,me);
 M=(VRmax-VRmin)/2;
 for run=1:runno                     %Start run loop
-pos=VRmin+(VRmax-VRmin).*rand(ps,D);
+    pos=VRmin+(VRmax-VRmin).*rand(ps,D);
 
 
-for i=1:ps;
-e(i,1)=feval(fhd,Dimension,pos(i,:));
-end
-[e, indices] = sort(e, 'ascend');
-pos = pos(indices, :);
-fitcount=ps;
+    for i=1:ps;
+        e(i,1)=feval(fhd, Dimension, pos(i,:));
+    end
+    [e, indices] = sort(e, 'ascend');
+    pos = pos(indices, :);
+    fitcount=ps;
 
-pbest=pos;
-pbestval=e; %initialize the pbest and the pbest's fitness value
-[gbestval,gbestid]=min(pbestval);
-gbest=pbest(gbestid,:);%initialize the gbest and the gbest's fitness value
-gbestrep=repmat(gbest,ps,1);
-% tr(1)=gbestval;
-% average(1)=mean(e);
+    pbest=pos;
+    pbestval=e; %initialize the pbest and the pbest's fitness value
+    [gbestval,gbestid]=min(pbestval);
+    gbest=pbest(gbestid,:);%initialize the gbest and the gbest's fitness value
+    gbestrep=repmat(gbest,ps,1);
+    % tr(1)=gbestval;
+    % average(1)=mean(e);
 
 for i=1:me          %start iteration loop
     
     
-    EliteSolutions = pos(1 : NumberOfElites, :);
+    % EliteSolutions = pos(1 : NumberOfElites, :);
 %           mutmin=1/ps;mutmax=1;
 %         MutationProbability=(mutmin-mutmax)/(me-1)*(i-1)+mutmax;
 %        MutationProbability=1/ps;
@@ -165,7 +165,8 @@ sigma=(gamma(1+beta)*sin(pi*beta/2)/(gamma((1+beta)/2)*beta*2^((beta-1)/2)))^(1/
 %     **********************************************************************
 %      Mutation start
 %      *************************************************************************
-
+if get(handles.mutation,'Value') == get(handles.mutation,'Max')
+    MutationProbability = str2num(get(handles.mutation_probability,'String'));
      for ParameterIndex = 1 : D
             if rand < MutationProbability
                % pos(k, ParameterIndex) = VRmin(k, ParameterIndex) + (VRmax(k, ParameterIndex) - VRmin(k, ParameterIndex)) * rand;
@@ -173,6 +174,7 @@ sigma=(gamma(1+beta)*sin(pi*beta/2)/(gamma((1+beta)/2)*beta*2^((beta-1)/2)))^(1/
                 % pos(k, ParameterIndex) = pos(k, ParameterIndex) + 0.5*gbestrep(k,ParameterIndex)* randn;
             end
      end
+end
 
 %      ******* **********************************************************************
 %      Mutation End
@@ -189,41 +191,37 @@ sigma=(gamma(1+beta)*sin(pi*beta/2)/(gamma((1+beta)/2)*beta*2^((beta-1)/2)))^(1/
 %  pos(k,:)=((pos(k,:)>=VRmin(k,:))&(pos(k,:)<=VRmax(k,:))).*pos(k,:)...
 %          +(pos(k,:)<VRmin(k,:)).*(VRmin(k,:)+(pos(k,:)-VRmin(k,:)).*rand(1,D))+(pos(k,:)>VRmax(k,:)).*(VRmax(k,:)-(VRmax(k,:)-pos(k,:)).*rand(1,D));
 
-     t1=round(ps*rand);
-     t2=round(ps*rand);
-     if k==t1 && t2
-     pos(t1,:)=EliteSolutions(1, :);
-     pos(t2,:)=EliteSolutions(2, :);
-     end
-%      if k==ps
-%          pos(k,:)=EliteSolutions(1, :);
-%      end
-%      if k==ps-1
-%          pos(k,:)=EliteSolutions(2, :);
-%      end
-    e(k,1)=feval(fhd,Dimension,pos(k,:));
+     
+    e(k,1)=feval(fhd, Dimension, pos(k,:));
     fitcount=fitcount+1;
     tmp=(pbestval(k)<e(k));
     temp=repmat(tmp,1,D);
     pbest(k,:)=temp.*pbest(k,:)+(1-temp).*pos(k,:);
     pbestval(k)=tmp.*pbestval(k)+(1-tmp).*e(k);%update the pbest
     if pbestval(k)<gbestval
-    gbest=pbest(k,:);
-    gbestval=pbestval(k);
-    gbestrep=repmat(gbest,ps,1);%update the gbest
+        gbest=pbest(k,:);
+        gbestval=pbestval(k);
+        gbestrep=repmat(gbest,ps,1);%update the gbest
     end
    % end
     tr(i+1)=gbestval;
     
     end         %end particle loop
-    % Apply ellitism
-    [e, indices] = sort(e, 'ascend');
+
+    %% Elitism start
+if get(handles.elitism,'Value') == get(handles.elitism,'Max')
+    elite = str2num(get(handles.elite,'String'));
+   [e, indices] = sort(e, 'ascend');
        pos = pos(indices, :);
-%        for k = 1 : NumberOfElites % replace the worst individuals with the previous generation's elites
-%         pos(ps-k+1, :) = EliteSolutions(k, :);
-%        end
+    for y = 1 : elite
+        pos(ps-(y-1),:) = pos(y,:);
+        e(ps-(y-1)) = e(y);
+    end
+end
+   %% Elitism ends here 
    
-    
+    % [gbestval,gbestid]=min(e);
+    % gbest=pos(gbestid,:);
 
     fprintf('Run=%d Iter=%d BestFitnessValue=%g\n',run,i,gbestval);
     set(handles.runs,'String',num2str(run));
@@ -270,7 +268,7 @@ sigma=(gamma(1+beta)*sin(pi*beta/2)/(gamma((1+beta)/2)*beta*2^((beta-1)/2)))^(1/
  data_mean(run,i)=mean(e);
  data(run,i)=gbestval;
  gbest_data(run,:)=gbest;
- 
+ fit_count(run,i)=fitcount;
  
   
 end     %end iteration loop
@@ -278,16 +276,25 @@ end     %end iteration loop
 %         break;
 %  end
 end     %end run loop
+Maxfit_count=fitcount
+evalue = e
 [gbestval_find,L]=min(data(:,end));
- gbest_find=gbest_data(L,:)
- gbestval=gbestval_find
- worst=max(data(:,end))
- std_deviation=std(data(:,end),1)
- Mean=mean(data(:,end))
+gbest_find=gbest_data(L,:)
+gbestval=gbestval_find
+if runno == 1
+    worst=max(data)
+    std_deviation=std(data,1)
+    Mean=mean(data)
+else   
+    worst=max(data(:,end))
+    std_deviation=std(data(:,end),1)
+    Mean=mean(data(:,end))
+end
 assignin('base','gbest_find',gbest_find);
 assignin('base','gbestval',gbestval_find);
 assignin('base','data',data);
 assignin('base','data_mean',data_mean);
+assignin('base','fit_count',fit_count);
 
 %save gkm2.mat;
 % std_deviation=std(data(L,:),1);
@@ -295,8 +302,20 @@ assignin('base','data_mean',data_mean);
 
 % figure(1);
 % plot([0,1:iteration],tr);
-% plot(mean(data));
-mean_data = mean(data)
+% figure(1)
+% if runno == 1
+%     plot(data);
+% else
+%     plot(mean(data));
+% end
+
+% figure(2)
+% if runno==1
+%     plot(fit_count(runno,:),data);
+% else
+%     plot(fit_count(runno,:),mean(data));
+% end
+
 eltime = toc;
 return
 function y=expo_rand(a,b,D)

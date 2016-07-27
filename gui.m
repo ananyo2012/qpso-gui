@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 28-Jun-2016 08:51:46
+% Last Modified by GUIDE v2.5 01-Jul-2016 02:40:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,14 +55,16 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for gui
 handles.output = hObject;
 %set(findobj(handles.figure1),'Units','characters')
-title('No of iteration vs mean best fitness values of QPSO Algorithm');
-xlabel('No of iterations');
-ylabel('Mean of best fitness values');
+title(handles.plot, 'No of iteration vs mean best fitness values of QPSO Algorithm');
+xlabel(handles.plot, 'No of iterations');
+ylabel(handles.plot, 'Mean of best fitness values');
 
 set(handles.buttongroup,'selectedobject',handles.select_alphamin_alphamax);
 handles.select = 1;
 set(handles.listbox,'Enable','off');
 set(handles.alpha,'Enable','off');
+set(handles.mutation_probability, 'Enable', 'off');
+set(handles.elite, 'Enable', 'off');
 % Update handles structure
 guidata(hObject, handles);
 
@@ -94,9 +96,9 @@ function execute_Callback(hObject, eventdata, handles)
     set(handles.worst,'String','');
     set(handles.eltime,'String','');
     cla reset
-    title('No of iteration vs mean best fitness values of QPSO Algorithm');
-    xlabel('No of iterations');
-    ylabel('Mean of best fitness values');
+    title(handles.plot, 'No of iteration vs mean best fitness values of QPSO Algorithm');
+    xlabel(handles.plot, 'No of iterations');
+    ylabel(handles.plot, 'Mean of best fitness values');
     
     Particle_Number=str2num(get(handles.particle_no,'String'));
     RUNNO=str2num(get(handles.runno,'String'));
@@ -110,14 +112,20 @@ function execute_Callback(hObject, eventdata, handles)
     addpath(handles.path);
     fname =handles.file;
     filename = fname(1:length(fname)-2);
-    % [mean_data, gbest_find, gbestval,worst, std_deviation, Mean, eltime] = firefly(rngseed,randseed,firefly_no,runno,maxgen,select_alphamin_alphamax,beta,Max_FES,dim,VRmin,VRMax,filename,handles);
-    [mean_data, gbest_find, gbestval, worst, std_deviation, Mean, eltime] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles)
-    plot(mean_data);
-    title('No of iteration vs mean best fitness values of QPSO Algorithm');
-    xlabel('No of iterations');
-    ylabel('Mean of best fitness values');
+    [data, fit_count, gbest_find, gbestval, worst, std_deviation, Mean, eltime] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles);
+
+    if RUNNO == 1
+        plot(handles.plot, data);
+    else
+        plot(handles.plot, mean(data));
+    end
+    title(handles.plot, 'No of iteration vs mean best fitness values of QPSO Algorithm');
+    xlabel(handles.plot, 'No of iterations');
+    ylabel(handles.plot, 'Mean of best fitness values');
    
-    handles.mean_data = mean_data;
+    handles.data = data;
+    handles.fit_count = fit_count;
+    handles.output_runno = RUNNO;
     
     set(handles.gbest_find,'String', num2str(gbest_find));
     set(handles.gbest,'String',gbestval);
@@ -394,8 +402,12 @@ end
 
 % --- Executes on button press in save.
 function save_Callback(hObject, eventdata, handles)
-f=figure;
-plot(handles.mean_data);
+figure(1);
+if handles.output_runno == 1
+    plot(handles.data);
+else
+    plot(mean(handles.data));
+end
 title('No of iteration vs mean best fitness values of QPSO Algorithm');
 xlabel('No of iterations');
 ylabel('Mean of best fitness values');
@@ -515,7 +527,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-set(hObject,'String',{'Fixed alpha';'0.4+rand(1,1)/2';'0.5+0.5*cos(0.5*pi*i/me)'});
+set(hObject,'String',{'Fixed alpha';'0.4 + rand(1,1)/2';'0.5 + 0.5*cos(0.5*pi*current_iteration/max_iteration)'});
 
 
 
@@ -569,3 +581,96 @@ function figure1_ResizeFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in mutation.
+function mutation_Callback(hObject, eventdata, handles)
+% hObject    handle to mutation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ if get(hObject,'Value') == get(hObject,'Max')
+     set(handles.mutation_probability, 'Enable', 'on');
+ else
+     set(handles.mutation_probability, 'Enable', 'off');
+ end
+
+% Hint: get(hObject,'Value') returns toggle state of mutation
+
+
+
+function mutation_probability_Callback(hObject, eventdata, handles)
+% hObject    handle to mutation_probability (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of mutation_probability as text
+%        str2double(get(hObject,'String')) returns contents of mutation_probability as a double
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function mutation_probability_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to mutation_probability (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in fitcount.
+function fitcount_Callback(hObject, eventdata, handles)
+% hObject    handle to fitcount (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+figure(2)
+if handles.output_runno==1
+    plot(handles.fit_count(handles.output_runno,:),handles.data);
+else
+    plot(handles.fit_count(handles.output_runno,:),mean(handles.data));
+end
+title('Mean data vs fitness count of QPSO Algorithm');
+xlabel('Mean data');
+ylabel('Fitness count');
+
+
+% --- Executes on button press in elitism.
+function elitism_Callback(hObject, eventdata, handles)
+% hObject    handle to elitism (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if get(hObject,'Value') == get(hObject,'Max')
+     set(handles.elite, 'Enable', 'on');
+ else
+     set(handles.elite, 'Enable', 'off');
+ end
+
+% Hint: get(hObject,'Value') returns toggle state of elitism
+
+
+
+function elite_Callback(hObject, eventdata, handles)
+% hObject    handle to elite (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA
+
+% Hints: get(hObject,'String') returns contents of elite as text
+%        str2double(get(hObject,'String')) returns contents of elite as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function elite_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to elite (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
