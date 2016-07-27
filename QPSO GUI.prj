@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration target="target.mlapps" target-name="Package App" name="QPSO GUI" location="C:\Users\Ananyo\Downloads\GKM sir Project\QPSO\qpso_gui" file="C:\Users\Ananyo\Downloads\GKM sir Project\QPSO\qpso_gui\QPSO GUI.prj" build-checksum="830509470">
+  <configuration target="target.mlapps" target-name="Package App" name="QPSO GUI" location="C:\Users\Ananyo\Downloads\GKM sir Project\qpso_gui" file="C:\Users\Ananyo\Downloads\GKM sir Project\qpso_gui\QPSO GUI.prj" build-checksum="4190485775">
     <param.appname>QPSO GUI</param.appname>
     <param.authnamewatermark>Ananya Maiti</param.authnamewatermark>
-    <param.email />
+    <param.email>ananyoevo@gmail.com</param.email>
     <param.company />
     <param.icon />
     <param.summary>GUI to simulate QPSO algorithm</param.summary>
-    <param.description />
+    <param.description>Use this app to simulate the QPSO algorithm</param.description>
     <param.screenshot />
-    <param.version>1.0</param.version>
+    <param.version>1.1</param.version>
     <param.products.name>
       <item>MATLAB</item>
     </param.products.name>
@@ -21,14 +21,11 @@
     </param.products.version>
     <param.platforms />
     <param.output>${PROJECT_ROOT}\QPSO GUI.mlappinstall</param.output>
-    <param.guid>a83d7d8c-7846-4306-9de5-5e4959a4b6f3</param.guid>
+    <param.guid>c304e474-b83b-4f4b-889a-96972373e1f5</param.guid>
     <unset>
-      <param.email />
       <param.company />
       <param.icon />
-      <param.description />
       <param.screenshot />
-      <param.version />
       <param.platforms />
     </unset>
     <fileset.main>
@@ -42,7 +39,7 @@
     </fileset.resources>
     <fileset.package />
     <build-deliverables>
-      <file name="QPSO GUI.mlappinstall" location="C:\Users\Ananyo\Downloads\GKM sir Project\QPSO\qpso_gui" optional="false">C:\Users\Ananyo\Downloads\GKM sir Project\QPSO\qpso_gui\QPSO GUI.mlappinstall</file>
+      <file name="QPSO GUI.mlappinstall" location="C:\Users\Ananyo\Downloads\GKM sir Project\qpso_gui" optional="false">C:\Users\Ananyo\Downloads\GKM sir Project\qpso_gui\QPSO GUI.mlappinstall</file>
     </build-deliverables>
     <workflow />
     <matlab>
