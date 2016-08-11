@@ -114,9 +114,11 @@ function execute_Callback(hObject, eventdata, handles)
     [data, fit_count, gbest_find, gbestval, worst, std_deviation, Mean, eltime, evalue] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles);
 
     if RUNNO == 1
-        plot(handles.plot, data);
+        % plot(handles.plot, data);
+        semilogy(handles.plot, data);
     else
-        plot(handles.plot, mean(data));
+        % plot(handles.plot, mean(data));
+        semilogy(handles.plot, mean(data));
     end
     title(handles.plot, 'No of iteration vs mean best fitness values of QPSO Algorithm');
     xlabel(handles.plot, 'No of iterations');
@@ -404,9 +406,11 @@ end
 function save_Callback(hObject, eventdata, handles)
 figure(1);
 if handles.output_runno == 1
-    plot(handles.data);
+    % plot(handles.data);
+    semilogy(handles.data);
 else
-    plot(mean(handles.data));
+    % plot(mean(handles.data));
+    semilogy(mean(handles.data));
 end
 title('No of iteration vs mean best fitness values of QPSO Algorithm');
 xlabel('No of iterations');
@@ -629,9 +633,11 @@ function fitcount_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 figure(2)
 if handles.output_runno==1
-    plot(handles.fit_count(handles.output_runno,:),handles.data);
+    % plot(handles.fit_count(handles.output_runno,:),handles.data);
+    semilogy(handles.fit_count(handles.output_runno,:),handles.data);
 else
-    plot(handles.fit_count(handles.output_runno,:),mean(handles.data));
+    % plot(handles.fit_count(handles.output_runno,:),mean(handles.data));
+    semilogy(handles.fit_count(handles.output_runno,:),mean(handles.data));
 end
 title('Mean data vs fitness count of QPSO Algorithm');
 xlabel('Mean data');
