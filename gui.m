@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 01-Jul-2016 02:40:31
+% Last Modified by GUIDE v2.5 11-Aug-2016 14:16:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -111,7 +111,7 @@ function execute_Callback(hObject, eventdata, handles)
     addpath(handles.path);
     fname =handles.file;
     filename = fname(1:length(fname)-2);
-    [data, fit_count, gbest_find, gbestval, worst, std_deviation, Mean, eltime] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles);
+    [data, fit_count, gbest_find, gbestval, worst, std_deviation, Mean, eltime, evalue] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles);
 
     if RUNNO == 1
         plot(handles.plot, data);
@@ -125,6 +125,7 @@ function execute_Callback(hObject, eventdata, handles)
     handles.data = data;
     handles.fit_count = fit_count;
     handles.output_runno = RUNNO;
+    handles.evalue = evalue;
     
     set(handles.gbest_find,'String', num2str(gbest_find));
     set(handles.gbest,'String',gbestval);
@@ -636,3 +637,66 @@ title('Mean data vs fitness count of QPSO Algorithm');
 xlabel('Mean data');
 ylabel('Fitness count');
 
+
+
+% --- Executes on button press in plot_e.
+function plot_e_Callback(hObject, eventdata, handles)
+% hObject    handle to plot_e (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+runnumber = str2num(get(handles.runnumber, 'String')); 
+iterationnumber = str2num(get(handles.iterationnumber, 'String'));
+e = squeeze(handles.evalue(runnumber, iterationnumber, :))';
+x = linspace(0,length(e'),length(e'));
+figure();
+scatter(x,e');
+xlabel('No of particles');
+ylabel('e value');
+title('e value vs No of particles');
+
+
+
+function runnumber_Callback(hObject, eventdata, handles)
+% hObject    handle to runnumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of runnumber as text
+%        str2double(get(hObject,'String')) returns contents of runnumber as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function runnumber_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to runnumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function iterationnumber_Callback(hObject, eventdata, handles)
+% hObject    handle to iterationnumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of iterationnumber as text
+%        str2double(get(hObject,'String')) returns contents of iterationnumber as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function iterationnumber_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to iterationnumber (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

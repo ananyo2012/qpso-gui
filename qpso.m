@@ -1,4 +1,4 @@
-function [data, fit_count, gbest_find, gbestval, worst, std_deviation, Mean, eltime] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles)
+function [data, fit_count, gbest_find, gbestval, worst, std_deviation, Mean, eltime, evalue] = qpso(rngseed, RUNNO,Max_Gen,Particle_Number,Dimension,VRmin,VRmax,levyflight,filename,handles)
 %[gbest_find,gbestval_find,fitcount,std_deviation,Mean]= qpso('failure_mutual1',3,500,10000,40,30,0,1,varargin)
 
 tic;
@@ -269,6 +269,7 @@ end
  data(run,i)=gbestval;
  gbest_data(run,:)=gbest;
  fit_count(run,i)=fitcount;
+ evalue(run,i,:) = e';
  
   
 end     %end iteration loop
@@ -277,7 +278,6 @@ end     %end iteration loop
 %  end
 end     %end run loop
 Maxfit_count=fitcount
-evalue = e
 [gbestval_find,L]=min(data(:,end));
 gbest_find=gbest_data(L,:)
 gbestval=gbestval_find
