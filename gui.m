@@ -54,7 +54,7 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for gui
 handles.output = hObject;
-%set(findobj(handles.figure1),'Units','characters')
+set(findobj(handles.figure1),'Units','characters');
 title(handles.plot, 'No of iteration vs mean best fitness values of QPSO Algorithm');
 xlabel(handles.plot, 'No of iterations');
 ylabel(handles.plot, 'Mean of best fitness values');
