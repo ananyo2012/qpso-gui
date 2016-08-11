@@ -64,7 +64,6 @@ handles.select = 1;
 set(handles.listbox,'Enable','off');
 set(handles.alpha,'Enable','off');
 set(handles.mutation_probability, 'Enable', 'off');
-set(handles.elite, 'Enable', 'off');
 % Update handles structure
 guidata(hObject, handles);
 
@@ -637,40 +636,3 @@ title('Mean data vs fitness count of QPSO Algorithm');
 xlabel('Mean data');
 ylabel('Fitness count');
 
-
-% --- Executes on button press in elitism.
-function elitism_Callback(hObject, eventdata, handles)
-% hObject    handle to elitism (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-if get(hObject,'Value') == get(hObject,'Max')
-     set(handles.elite, 'Enable', 'on');
- else
-     set(handles.elite, 'Enable', 'off');
- end
-
-% Hint: get(hObject,'Value') returns toggle state of elitism
-
-
-
-function elite_Callback(hObject, eventdata, handles)
-% hObject    handle to elite (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA
-
-% Hints: get(hObject,'String') returns contents of elite as text
-%        str2double(get(hObject,'String')) returns contents of elite as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function elite_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to elite (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end

@@ -209,15 +209,15 @@ end
     end         %end particle loop
 
     %% Elitism start
-if get(handles.elitism,'Value') == get(handles.elitism,'Max')
-    elite = str2num(get(handles.elite,'String'));
-   [e, indices] = sort(e, 'ascend');
-       pos = pos(indices, :);
-    for y = 1 : elite
-        pos(ps-(y-1),:) = pos(y,:);
-        e(ps-(y-1)) = e(y);
-    end
-end
+% if get(handles.elitism,'Value') == get(handles.elitism,'Max')
+%    elite = str2num(get(handles.elite,'String'));
+%    [e, indices] = sort(e, 'ascend');
+%        pos = pos(indices, :);
+%     for y = 1 : elite
+%         pos(ps-(y-1),:) = pos(y,:);
+%         e(ps-(y-1)) = e(y);
+%     end
+% end
    %% Elitism ends here 
    
     % [gbestval,gbestid]=min(e);
